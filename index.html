@@ -15,7 +15,6 @@
         
         #bannerKodi { position: fixed; top: 45%; left: 100%; z-index: 1000; display: none; }
         .flag-wrapper { position: relative; background: white; padding: 20px 60px; border-top: 5px solid #ff4d6d; border-bottom: 5px solid #ff4d6d; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        /* Fixed content tags for the flag design */
         .flag-wrapper::before, .flag-wrapper::after { content: ''; position: absolute; top: -5px; width: 45px; height: calc(100% + 10px); background: #ff4d6d; z-index: -1; }
         .flag-wrapper::before { left: -25px; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
         .flag-wrapper::after { right: -25px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
@@ -108,16 +107,27 @@
         document.getElementById('envelopeOverlay').onclick = () => {
             document.getElementById('envelopeOverlay').style.display = 'none';
             box.style.display = 'block';
-            document.getElementById('bgMusic').play().catch(e => console.log("Music play blocked by browser"));
+            document.getElementById('bgMusic').play().catch(e => console.log("Music play blocked"));
         };
 
         let noCount = 0;
-        noBtn.onmouseover = () => {
+
+        function moveButton() {
             noCount++;
-            noBtn.style.left = Math.random() * (window.innerWidth - 120) + 'px';
-            noBtn.style.top = Math.random() * (window.innerHeight - 100) + 'px';
             gif.classList.remove('hidden');
             
+            // Mobile-ku yethamaari screen size kulla move aaga logic
+            const padding = 30;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+            
+            const newX = Math.max(padding, Math.random() * maxX);
+            const newY = Math.max(padding, Math.random() * maxY);
+            
+            noBtn.style.position = "fixed"; // Screen-ai vittu pogama irukka fixed
+            noBtn.style.left = newX + "px";
+            noBtn.style.top = newY + "px";
+
             if(noCount === 1) {
                 gif.src = "bubu1.gif"; 
                 mainText.innerHTML = "Ennadu No-va?? 😲";
@@ -129,13 +139,17 @@
                 mainText.innerHTML = "Anba sonna kekka matta, <br>chappunu ore adithan! 👋💢";
                 noBtn.style.display = "none"; 
             }
-        };
+        }
+
+        // Mouse-kum set aagum, Mobile touch-kum set aagum
+        noBtn.onmouseover = moveButton;
+        noBtn.onclick = (e) => { e.preventDefault(); moveButton(); };
 
         yesBtn.onclick = () => {
             box.style.background = "transparent";
             box.style.boxShadow = "none";
             box.style.border = "none";
-            document.getElementById('messageArea').innerHTML = `<h1 class="text-4xl font-bold text-white drop-shadow-lg">I knew it Eruma!I Knew it! ❤️</h1><span class="special-name">Razz ∞ Srizz</span>`;
+            document.getElementById('messageArea').innerHTML = `<h1 class="text-4xl font-bold text-white drop-shadow-lg">I knew it Eruma! ❤️</h1><span class="special-name">Razz ∞ Srizz</span>`;
             gif.src = "happy.gif";
             document.getElementById('btnGroup').style.display = 'none';
             document.body.style.background = "url('bg.gif') center/cover";
@@ -147,5 +161,4 @@
         };
     </script>
 </body>
-
 </html>
