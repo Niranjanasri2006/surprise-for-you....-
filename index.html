@@ -26,10 +26,12 @@
 
         .container { padding: 40px; border-radius: 40px; width: 90%; max-width: 420px; text-align: center; position: relative; z-index: 100; display: none; background: #ffffff; border: 3px solid #ffccd5; box-shadow: 0 25px 50px -12px rgba(255, 77, 109, 0.25); }
         .special-name { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 3.5rem; display: block; margin-top: 10px; }
-        #noBtn { position: absolute; transition: 0.2s; z-index: 50; }
+        #noBtn { position: absolute; transition: 0.15s ease; z-index: 100; touch-action: none; }
     </style>
 </head>
 <body id="mainBody" class="flex items-center justify-center">
+
+    <img src="bubu2.gif" style="display:none;">
 
     <div id="chatOverlay" class="overlay p-6">
         <div class="mb-10 text-center"><h1 class="text-3xl font-bold text-[#ff4d6d]">Personal Chat ✨</h1><p id="status" class="text-sm text-gray-400">typing...</p></div>
@@ -54,7 +56,7 @@
     <audio id="bgMusic" loop><source src="song.mp3" type="audio/mpeg"></audio>
 
     <div class="container" id="box">
-        <img id="gif" class="w-64 h-64 mx-auto rounded-3xl object-cover mb-6 hidden" src="">
+        <img id="gif" class="w-64 h-64 mx-auto rounded-3xl object-cover mb-6 hidden" src="bubu1.gif">
         <div id="messageArea">
             <h1 id="mainText" class="text-2xl font-bold text-[#d63384]">Will you be my Valentine, <br>My Dear Eruma? ❤️</h1>
         </div>
@@ -88,7 +90,7 @@
                     target.innerHTML += msgs[i].txt[charIdx]; charIdx++;
                     if (charIdx >= msgs[i].txt.length) { 
                         clearInterval(interval); 
-                        setTimeout(() => startType(i + 1), 1000); 
+                        setTimeout(() => startType(i + 1), 800); 
                     }
                 }, 60);
             } else { 
@@ -107,7 +109,7 @@
         document.getElementById('envelopeOverlay').onclick = () => {
             document.getElementById('envelopeOverlay').style.display = 'none';
             box.style.display = 'block';
-            document.getElementById('bgMusic').play().catch(e => console.log("Music play blocked"));
+            document.getElementById('bgMusic').play().catch(e => console.log("Audio play needs interaction"));
         };
 
         let noCount = 0;
@@ -115,16 +117,16 @@
         function moveButton() {
             noCount++;
             gif.classList.remove('hidden');
-            
-            // Mobile-ku yethamaari screen size kulla move aaga logic
-            const padding = 30;
+
+            // Screen boundaries for mobile
+            const padding = 20;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
             
-            const newX = Math.max(padding, Math.random() * maxX);
-            const newY = Math.max(padding, Math.random() * maxY);
+            const newX = Math.min(maxX, Math.max(padding, Math.random() * maxX));
+            const newY = Math.min(maxY, Math.max(padding, Math.random() * maxY));
             
-            noBtn.style.position = "fixed"; // Screen-ai vittu pogama irukka fixed
+            noBtn.style.position = "fixed";
             noBtn.style.left = newX + "px";
             noBtn.style.top = newY + "px";
 
@@ -141,9 +143,16 @@
             }
         }
 
-        // Mouse-kum set aagum, Mobile touch-kum set aagum
+        // Support for both desktop and mobile touch
         noBtn.onmouseover = moveButton;
-        noBtn.onclick = (e) => { e.preventDefault(); moveButton(); };
+        noBtn.ontouchstart = (e) => {
+            e.preventDefault();
+            moveButton();
+        };
+        noBtn.onclick = (e) => {
+            e.preventDefault();
+            moveButton();
+        };
 
         yesBtn.onclick = () => {
             box.style.background = "transparent";
@@ -157,7 +166,7 @@
             setTimeout(() => { 
                 banner.style.display = 'block'; 
                 banner.style.animation = "slideAcross 10s linear forwards"; 
-            }, 2000);
+            }, 1000);
         };
     </script>
 </body>
