@@ -24,14 +24,12 @@
         .banner-text { font-size: 2.2rem; font-weight: bold; color: #d63384; white-space: nowrap; }
         @keyframes slideAcross { 0% { left: 100%; } 100% { left: -180%; } }
 
-        .container { padding: 40px; border-radius: 40px; width: 90%; max-width: 420px; text-align: center; position: relative; z-index: 100; display: none; background: #ffffff; border: 3px solid #ffccd5; box-shadow: 0 25px 50px -12px rgba(255, 77, 109, 0.25); }
+        .container { padding: 40px; border-radius: 40px; width: 95%; max-width: 420px; text-align: center; position: relative; z-index: 100; display: none; background: #ffffff; border: 3px solid #ffccd5; box-shadow: 0 25px 50px -12px rgba(255, 77, 109, 0.25); }
         .special-name { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 3.5rem; display: block; margin-top: 10px; }
-        #noBtn { position: absolute; transition: 0.15s ease; z-index: 100; touch-action: none; }
+        #noBtn { position: absolute; transition: 0.15s ease-out; z-index: 1000; touch-action: none; }
     </style>
 </head>
 <body id="mainBody" class="flex items-center justify-center">
-
-    <img src="bubu2.gif" style="display:none;">
 
     <div id="chatOverlay" class="overlay p-6">
         <div class="mb-10 text-center"><h1 class="text-3xl font-bold text-[#ff4d6d]">Personal Chat ✨</h1><p id="status" class="text-sm text-gray-400">typing...</p></div>
@@ -74,6 +72,10 @@
         const gif = document.getElementById('gif');
         const mainText = document.getElementById('mainText');
         const box = document.getElementById('box');
+
+        // PRELOAD SYSTEM: This stops the lag
+        const images = ["bubu1.gif", "bubu2.gif", "slap.gif", "happy.gif", "bg.gif"];
+        images.forEach(i => { const img = new Image(); img.src = i; });
 
         const msgs = [
             { id: "chat1", tid: "text1", txt: "Hey Eruma! 😘" },
@@ -118,8 +120,7 @@
             noCount++;
             gif.classList.remove('hidden');
 
-            // Screen boundaries for mobile
-            const padding = 20;
+            const padding = 25;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
             
@@ -143,16 +144,9 @@
             }
         }
 
-        // Support for both desktop and mobile touch
         noBtn.onmouseover = moveButton;
-        noBtn.ontouchstart = (e) => {
-            e.preventDefault();
-            moveButton();
-        };
-        noBtn.onclick = (e) => {
-            e.preventDefault();
-            moveButton();
-        };
+        noBtn.ontouchstart = (e) => { e.preventDefault(); moveButton(); };
+        noBtn.onclick = (e) => { e.preventDefault(); moveButton(); };
 
         yesBtn.onclick = () => {
             box.style.background = "transparent";
